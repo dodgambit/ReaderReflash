@@ -1,0 +1,47 @@
+'------------------------------------------------------------------------------
+'FILE DESCRIPTION: pre build
+'------------------------------------------------------------------------------
+
+Function PathName(name)
+	PathName = Left(name,InStrRev(name,"\")) 
+End Function
+
+Sub ReplaceText(selection, count, incrementby)
+
+'selection represents the TextSelection object
+'count represents the position of the version number to be incremented
+'incrementby represents a number that will be added to the existing version number
+
+selection.WordRight dsMove, count
+selection.WordRight dsExtend, 1
+Dim str
+str = selection.Text
+str = str + incrementby
+
+selection.Text = str
+
+End Sub
+
+
+Sub Application_BeforeBuildStart()
+
+Dim full_path, old
+
+full_path = PathName(ActiveProject.FullName)
+old = CurrentDirectory
+
+CurrentDirectory = full_path
+
+
+dim shell
+set shell=CreateObject("WScript.Shell")
+shell.run "incrbuild", 7, true
+set shell=nothing
+
+CurrentDirectory = old
+
+PrintToOutputWindow("hello")
+
+
+ 
+End Sub
